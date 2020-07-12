@@ -1,9 +1,16 @@
 module Lib
   ( anyChar
-  , satisfy
+  , char
+  , digit
+  , letter
   )
 where
 
-anyChar (x : xs) = (x, xs)
+import           Data.Char
 
+anyChar (x : xs) = (x, xs)
 satisfy f (x : xs) | f x = (x, xs)
+
+char c = satisfy (== c)
+digit = satisfy isDigit
+letter = satisfy isLetter

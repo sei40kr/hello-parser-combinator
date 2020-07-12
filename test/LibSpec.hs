@@ -13,6 +13,9 @@ spec :: Spec
 spec = do
   describe "anyChar" $ do
     it "test1" $ anyChar "abc" `shouldBe` ('a', "bc")
-  describe "satisfy" $ do
-    it "test1" $ satisfy (== 'a') "abc" `shouldBe` ('a', "bc")
-    it "test1" $ satisfy isDigit "123" `shouldBe` ('1', "23")
+  describe "char" $ do
+    it "test1" $ char 'a' "abc" `shouldBe` ('a', "bc")
+  describe "digit" $ do
+    it "test1" $ digit "123" `shouldBe` ('1', "23")
+  describe "letter" $ do
+    it "test1" $ letter "abc" `shouldBe` ('a', "bc")
