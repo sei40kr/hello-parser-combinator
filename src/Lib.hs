@@ -1,3 +1,3 @@
-module Data.Lib
+module Lib
   ()
 where
