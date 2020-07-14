@@ -10,12 +10,21 @@ import           Data.Char
 import           Control.Monad
 import           Control.Monad.State
 
-anyChar :: State String Char
-anyChar = state anyChar where anyChar (x : xs) = (x, xs)
+anyChar = StateT anyChar where
+  anyChar (x : xs) = Right (x, xs)
+  anyChar _        = Left "too short"
 
-satisfy :: (Char -> Bool) -> State String Char
-satisfy f = state satisfy where satisfy (x : xs) | f x = (x, xs)
+satisfy f = StateT satisfy where
+  satisfy (x : xs) | not $ f x = Left $ ": " ++ show x
+  satisfy xs                   = runStateT anyChar xs
 
-char c = satisfy (== c)
-digit = satisfy isDigit
-letter = satisfy isLetter
+(StateT a) <|> (StateT b) = StateT $ \s -> a s <|> b s where
+  Left a <|> Left b = Left $ b ++ a
+  Left _ <|> b      = b
+  a      <|> _      = a
+
+left = lift . Left
+
+char c = satisfy (== c) <|> left ("not char " ++ show c)
+digit = satisfy isDigit <|> left "not digit"
+letter = satisfy isLetter <|> left "not letter"
