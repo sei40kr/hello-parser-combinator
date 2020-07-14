@@ -17,6 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Lib
   build-depends:       base >= 4.7 && < 5
+                     , mtl
   default-language:    Haskell2010
 
 executable hello-parser-combinator
@@ -34,6 +35,7 @@ test-suite hello-parser-combinator-test
   build-depends:       base
                      , hello-parser-combinator
                      , hspec
+                     , mtl
                      , QuickCheck
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
