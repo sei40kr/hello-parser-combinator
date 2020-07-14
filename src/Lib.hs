@@ -1,11 +1,16 @@
 module Lib
   ( anyChar
+  , (<|>)
   , char
   , digit
   , letter
+  , many
   )
 where
 
+import           Control.Applicative            ( (<$>)
+                                                , (<*>)
+                                                )
 import           Data.Char
 import           Control.Monad
 import           Control.Monad.State
@@ -28,3 +33,5 @@ left = lift . Left
 char c = satisfy (== c) <|> left ("not char " ++ show c)
 digit = satisfy isDigit <|> left "not digit"
 letter = satisfy isLetter <|> left "not letter"
+
+many p = ((:) <$> p <*> many p) <|> return []

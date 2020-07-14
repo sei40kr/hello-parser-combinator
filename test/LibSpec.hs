@@ -25,3 +25,10 @@ spec = do
   describe "letter" $ do
     it "test1" $ runStateT letter "abc" `shouldBe` Right ('a', "bc")
     it "test2" $ runStateT letter "123" `shouldBe` Left "not letter: '1'"
+  describe "many" $ do
+    it "test1" $ evalStateT (many letter) "abc123" `shouldBe` Right "abc"
+    it "test2" $ evalStateT (many letter) "123abc" `shouldBe` Right ""
+    it "test3" $ evalStateT (many (letter <|> digit)) "abc123" `shouldBe` Right
+      "abc123"
+    it "test4" $ evalStateT (many (letter <|> digit)) "123abc" `shouldBe` Right
+      "123abc"
