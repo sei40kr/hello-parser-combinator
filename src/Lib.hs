@@ -5,6 +5,7 @@ module Lib
   , digit
   , letter
   , many
+  , many1
   , string
   , try
   )
@@ -45,3 +46,4 @@ letter = satisfy isLetter <|> left "not letter"
 string s = sequence [ char x | x <- s ]
 
 many p = ((:) <$> p <*> many p) <|> return []
+many1 p = (:) <$> p <*> many p

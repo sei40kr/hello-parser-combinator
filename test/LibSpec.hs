@@ -34,6 +34,10 @@ spec = do
       "abc123"
     it "test4" $ evalStateT (many (letter <|> digit)) "123abc" `shouldBe` Right
       "123abc"
+  describe "many1" $ do
+    it "test1" $ evalStateT (many1 $ char 'a') "" `shouldBe` Left
+      ("not char 'a'too short", "")
+    it "test1" $ evalStateT (many1 $ char 'a') "aaa" `shouldBe` Right "aaa"
   describe "string" $ do
     it "test1" $ evalStateT (string "ab") "ab" `shouldBe` Right "ab"
   describe "try" $ do
