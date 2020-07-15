@@ -52,17 +52,31 @@ number = do
   return (read x :: Int)
 
 expr = do
-  x  <- number
+  x  <- term
   xs <-
     many
     $   do
           char '+'
-          number
+          term
     <|> do
           char '-'
-          y <- number
+          y <- term
           return $ -y
   return $ sum $ x : xs
+
+term = do
+  x  <- number
+  fs <-
+    many
+    $   do
+          char '*'
+          y <- number
+          return (* y)
+    <|> do
+          char '/'
+          y <- number
+          return (`div` y)
+  return $ foldl (\x f -> f x) x fs
 
 many p = ((:) <$> p <*> many p) <|> return []
 many1 p = (:) <$> p <*> many p
