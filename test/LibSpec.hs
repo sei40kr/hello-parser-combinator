@@ -34,3 +34,18 @@ spec = do
       "abc123"
     it "test4" $ evalStateT (many (letter <|> digit)) "123abc" `shouldBe` Right
       "123abc"
+  describe "string" $ do
+    it "test1" $ evalStateT (string "ab") "ab" `shouldBe` Right "ab"
+  describe "try" $ do
+    it "test1"
+      $          evalStateT
+                   (try (sequence [char 'a', char 'b']) <|> sequence [char 'a', char 'c']
+                   )
+                   "ab"
+      `shouldBe` Right "ab"
+    it "test2"
+      $          evalStateT
+                   (try (sequence [char 'a', char 'b']) <|> sequence [char 'a', char 'c']
+                   )
+                   "ac"
+      `shouldBe` Right "ac"
