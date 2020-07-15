@@ -8,6 +8,8 @@ module Lib
   , many1
   , string
   , try
+  , expr
+  , number
   )
 where
 
@@ -44,6 +46,23 @@ digit = satisfy isDigit <|> left "not digit"
 letter = satisfy isLetter <|> left "not letter"
 
 string s = sequence [ char x | x <- s ]
+
+number = do
+  x <- many1 digit
+  return (read x :: Int)
+
+expr = do
+  x  <- number
+  xs <-
+    many
+    $   do
+          char '+'
+          number
+    <|> do
+          char '-'
+          y <- number
+          return $ -y
+  return $ sum $ x : xs
 
 many p = ((:) <$> p <*> many p) <|> return []
 many1 p = (:) <$> p <*> many p

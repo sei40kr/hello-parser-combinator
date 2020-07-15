@@ -53,3 +53,11 @@ spec = do
                    )
                    "ac"
       `shouldBe` Right "ac"
+  describe "expr" $ do
+    it "test1" $ evalStateT expr "1+2" `shouldBe` Right 3
+    it "test2" $ evalStateT expr "123" `shouldBe` Right 123
+    it "test3" $ evalStateT expr "1+2+3" `shouldBe` Right 6
+    it "test4" $ evalStateT expr "1-2-3" `shouldBe` Right (-4)
+    it "test5" $ evalStateT expr "1-2+3" `shouldBe` Right 2
+  describe "number" $ do
+    it "test1" $ evalStateT number "123" `shouldBe` Right 123
