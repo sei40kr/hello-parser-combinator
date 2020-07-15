@@ -15,6 +15,7 @@ where
 
 import           Control.Applicative            ( (<$>)
                                                 , (<*>)
+                                                , (*>)
                                                 )
 import           Data.Char
 import           Control.Monad
@@ -47,36 +48,22 @@ letter = satisfy isLetter <|> left "not letter"
 
 string s = sequence [ char x | x <- s ]
 
-number = do
-  x <- many1 digit
-  return (read x :: Int)
+number = read <$> many1 digit
 
-expr = do
-  x  <- term
-  xs <-
-    many
-    $   do
-          char '+'
-          term
-    <|> do
-          char '-'
-          y <- term
-          return $ -y
-  return $ sum $ x : xs
+eval m fs = foldl (\x f -> f x) <$> m <*> fs
+apply f m = flip f <$> m
 
-term = do
-  x  <- number
-  fs <-
-    many
-    $   do
-          char '*'
-          y <- number
-          return (* y)
-    <|> do
-          char '/'
-          y <- number
-          return (`div` y)
-  return $ foldl (\x f -> f x) x fs
+expr =
+  eval term
+    $   many
+    $   (char '+' *> apply (+) term)
+    <|> (char '-' *> apply (-) term)
+
+term =
+  eval number
+    $   many
+    $   (char '*' *> apply (*) number)
+    <|> (char '/' *> apply div number)
 
 many p = ((:) <$> p <*> many p) <|> return []
 many1 p = (:) <$> p <*> many p
