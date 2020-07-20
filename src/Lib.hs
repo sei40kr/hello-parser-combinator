@@ -60,10 +60,12 @@ expr =
     <|> (char '-' *> apply (-) term)
 
 term =
-  eval number
+  eval factor
     $   many
-    $   (char '*' *> apply (*) number)
-    <|> (char '/' *> apply div number)
+    $   (char '*' *> apply (*) factor)
+    <|> (char '/' *> apply div factor)
+
+factor = (char '(' *> expr <* char ')') <|> number
 
 many p = ((:) <$> p <*> many p) <|> return []
 many1 p = (:) <$> p <*> many p
