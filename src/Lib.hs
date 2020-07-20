@@ -18,6 +18,7 @@ import           Control.Applicative            ( (<$>)
                                                 , (*>)
                                                 )
 import           Data.Char
+import           Data.Functor                   ( ($>) )
 import           Control.Monad
 import           Control.Monad.State
 
@@ -45,6 +46,8 @@ left e = StateT $ \s -> Left (e, s)
 char c = satisfy (== c) <|> left ("not char " ++ show c)
 digit = satisfy isDigit <|> left "not digit"
 letter = satisfy isLetter <|> left "not letter"
+space = satisfy isSpace <|> left "not space"
+spaces = skipMany space
 
 string s = sequence [ char x | x <- s ]
 
@@ -65,7 +68,8 @@ term =
     $   (char '*' *> apply (*) factor)
     <|> (char '/' *> apply div factor)
 
-factor = (char '(' *> expr <* char ')') <|> number
+factor = spaces *> ((char '(' *> expr <* char ')') <|> number) <* spaces
 
 many p = ((:) <$> p <*> many p) <|> return []
 many1 p = (:) <$> p <*> many p
+skipMany p = many p $> ()
