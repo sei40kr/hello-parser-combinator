@@ -56,18 +56,21 @@ number = read <$> many1 digit
 eval m fs = foldl (\x f -> f x) <$> m <*> fs
 apply f m = flip f <$> m
 
+-- expr = term, {("+", term) | ("-", term)}
 expr =
   eval term
     $   many
     $   (char '+' *> apply (+) term)
     <|> (char '-' *> apply (-) term)
 
+-- term = factor, {("*", factor) | ("/", factor)}
 term =
   eval factor
     $   many
     $   (char '*' *> apply (*) factor)
     <|> (char '/' *> apply div factor)
 
+-- factor = [spaces], ("(", expr, ")") | number, [spaces]
 factor = spaces *> ((char '(' *> expr <* char ')') <|> number) <* spaces
 
 many p = ((:) <$> p <*> many p) <|> return []
